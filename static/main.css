@@ -1,0 +1,67 @@
+:root {
+    --index-main-bg-color: #DAD3BE;
+    --index-btn-bg-color: #254336;
+    --index-btn-text-color: #DAD3BE;
+    --index-boreder-color: #B7B597;
+
+}
+
+body {
+    background-color: var(--index-main-bg-color);
+}
+
+h1 {
+    text-align: center;
+    
+    margin: 30px;
+}
+
+#convert-form {
+    margin: 0, auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.currency-container {
+    display: flex;  
+    align-items: center;
+    justify-content: space-around;
+
+    margin-bottom: 20px;
+
+}
+
+button {
+    border: none;
+    border-radius: 5px;
+
+    background-color: var(--index-btn-bg-color);
+    color: var(--index-btn-text-color);
+
+    padding: 10px 15px;
+}
+
+.currency-choice {
+    padding: 10px 15px;
+
+    border: 2px solid var(--index-boreder-color);
+
+    border-radius: 5px;
+}
+
+#amount {
+    padding: 8px  10px ;
+
+    border: 2px solid var(--index-boreder-color);
+
+    border-radius: 5px;
+
+    outline: none;
+}
+
+#result {
+    margin-top: 20px;
+}

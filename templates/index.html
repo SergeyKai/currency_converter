@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/800f121123.js" crossorigin="anonymous"></script>
+
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+
+    <title>Title</title>
+</head>
+<body>
+<div class="">
+    <h1>Конвертер валюты</h1>
+</div>
+
+
+<form action="{{ url_for('convert') }}" method="POST" id="convert-form" content="application/json">
+
+    <div>
+        <button onclick="updateRates()">Обновить курс</button>
+        <p id="last-update"></p>
+    </div>
+
+    <div class="currency-container">
+
+        <div class="currency-from">
+            <select class="currency-choice" id="from">
+                {% for currency in currencies %}
+                <option class="currency-item" value="{{ currency.currency }}"
+                        {% if currency.currency=="RUB" %} selected {% endif %}>
+                    {{ currency.currency }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <i class="fa-solid fa-arrow-right"></i>
+
+            <select class="currency-choice" id="to">
+                {% for currency in currencies %}
+                <option class="currency-item" value="{{ currency.currency }}"
+                        {% if currency.currency=="USD" %} selected {% endif %}>
+                    {{ currency.currency }}
+                </option>
+                {% endfor %}
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="amount-container">
+        <input name="amount-from" type="text" id="amount">
+
+        <button class="submit-btn" type="submit">Рассчитать</button>
+    </div>
+
+
+    <h2 id="result"></h2>
+
+
+</form>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        fetchLastUpdate();
+
+        document.getElementById("convert-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            convertCurrency();
+        });
+    });
+
+
+    function fetchLastUpdate() {
+        fetch('/last_update')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('last-update').innerText = 'Last update: ' + new Date(data.last_updated).toLocaleString();
+        });
+    }
+
+    function updateRates() {
+        fetch('/update_rates', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            fetchLastUpdate();
+        });
+    }
+
+    function convertCurrency() {
+        const from = document.getElementById('from').value;
+        const to = document.getElementById('to').value;
+        const amount = document.getElementById('amount').value;
+
+        fetch('/convert', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ from, to, amount: parseFloat(amount) })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.converted_amount) {
+                document.getElementById('result').innerText = 'Результат: ' + data.converted_amount;
+            } else {
+                document.getElementById('result').innerText = 'Error: ' + data.message;
+            }
+        });
+    }
+
+
+</script>
+
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"-->
+<!--            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"-->
+<!--            crossorigin="anonymous">-->
+
+</body>
+</html>
